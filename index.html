@@ -254,7 +254,7 @@
           <span id="startLabel">Start Flow</span>
         </button>
         <div class="secondary-row">
-          <div class="chip">Keep your head still · Only move your **eyes**</div>
+          <div class="chip">Keep your head still · Only move your <strong>eyes</strong></div>
           <div>~1 min 45 s</div>
         </div>
       </section>
@@ -293,10 +293,12 @@
       drawStatic();
     });
 
+    // Each movement now has its own speed value (higher = faster)
     const movements = [
       {
         name: "Horizontal glide",
         description: "Follow left ↔ right along the line.",
+        speed: 8,
         fn: (t) => {
           const p = (t % 1);
           const x = centerX - radius + 2 * radius * p;
@@ -307,6 +309,7 @@
       {
         name: "Vertical glide",
         description: "Follow up ↕ down along the line.",
+        speed: 8,
         fn: (t) => {
           const p = (t % 1);
           const y = centerY - radius + 2 * radius * p;
@@ -317,6 +320,7 @@
       {
         name: "Circle sweep",
         description: "Trace the glowing arc clockwise.",
+        speed: 6,
         fn: (t) => {
           const angle = -Math.PI / 2 + 2 * Math.PI * (t % 1);
           return {
@@ -328,6 +332,7 @@
       {
         name: "Diagonal cross",
         description: "Eyes glide along an X pattern.",
+        speed: 7,
         fn: (t) => {
           const p = (t % 1);
           const diag = (Math.floor(t) % 2) === 0;
@@ -346,6 +351,7 @@
       {
         name: "Figure‑8",
         description: "Follow a relaxed horizontal 8.",
+        speed: 5,
         fn: (t) => {
           const p = (t % 1) * 2 * Math.PI;
           const a = radius * 0.75;
@@ -359,12 +365,12 @@
       {
         name: "Random jumps",
         description: "Jump your eyes to each new dot.",
+        speed: 5,
         fn: (() => {
           let current = null;
           let next = null;
           let lastStep = -1;
           function randomPoint() {
-            const margin = radius * 0.2;
             const r = radius * 0.9;
             const ang = Math.random() * Math.PI * 2;
             return {
@@ -390,6 +396,7 @@
       {
         name: "Slow orbit",
         description: "Finish with a smooth full circle.",
+        speed: 4,
         fn: (t) => {
           const angle = -Math.PI / 2 + 2 * Math.PI * (t % 1);
           return {
@@ -436,7 +443,8 @@
       ctx.clearRect(0, 0, width, height);
       drawStatic();
 
-      const t = setProgress * 3;
+      // use movement-specific speed to control how fast it moves
+      const t = setProgress * movement.speed;
       const { x, y } = movement.fn(t);
 
       const grad = ctx.createRadialGradient(x, y, 0, x, y, radius * 0.7);
@@ -475,7 +483,7 @@
         isRunning = false;
         startLabel.textContent = "Restart Flow";
         timerEl.textContent = "Done";
-        instructionText.textContent = "Close your eyes, breathe, and **relax** for 20 seconds.";
+        instructionText.textContent = "Close your eyes, breathe, and <strong>relax</strong> for 20 seconds.";
         return;
       }
 
@@ -488,7 +496,7 @@
       isRunning = true;
       startTimestamp = null;
       startLabel.textContent = "Pause";
-      instructionText.textContent = "Follow the glowing ball with your **eyes** only.";
+      instructionText.textContent = "Follow the glowing ball with your <strong>eyes</strong> only.";
       animationFrame = requestAnimationFrame(loop);
     }
 
@@ -520,4 +528,3 @@
   </script>
 </body>
 </html>
-
