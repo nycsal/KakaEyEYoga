@@ -1,1 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>KaKaReza Chishim Yoga</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
+  <style>
+    :root {
+      --bg: #050816;
+      --primary: #00ffb9;
+      --accent: #ff6fd8;
+      --accent2: #ffd56f;
+      --text-main: #f7f7ff;
+      --text-muted: #b3b3c6;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+                   "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #111827 0, var(--bg) 55%, #020617 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 14px 10px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    header {
+      text-align: center;
+    }
+
+    .brand {
+      font-size: 1.6rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: var(--primary);
+      text-shadow: 0 0 12px rgba(0, 255, 185, 0.7);
+    }
+
+    .sub-brand {
+      font-size: 0.9rem;
+      margin-top: 2px;
+      color: var(--text-muted);
+    }
+
+    .tagline {
+      margin-top: 6px;
+      font-size: 0.9rem;
+      color: var(--accent2);
+    }
+
+    .card {
+      background: rgba(15, 23, 42, 0.95);
+      border-radius: 18px;
+      padding: 12px 14px;
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .status-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .step-pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .step-pill span.bullet {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--primary);
+      box-shadow: 0 0 10px rgba(0, 255, 185, 0.8);
+    }
+
+    .timer {
+      font-variant-numeric: tabular-nums;
+      font-size: 1rem;
+    }
+
+    .progress-bar {
+      position: relative;
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(31, 41, 55, 0.9);
+    }
+
+    .progress-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent), var(--primary));
+      box-shadow: 0 0 12px rgba(0, 255, 185, 0.75);
+      transition: width 0.15s linear;
+    }
+
+    .instruction {
+      text-align: center;
+      font-size: 0.95rem;
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 4px 0;
+      color: var(--text-main);
+    }
+
+    .instruction span {
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: radial-gradient(circle at top left, rgba(56,189,248,0.4), transparent 55%);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+    }
+
+    .canvas-wrapper {
+      position: relative;
+      width: 100%;
+      padding-top: 100%;
+      border-radius: 24px;
+      background: radial-gradient(circle at top, #1d293b 0, #020617 70%);
+      overflow: hidden;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+    }
+
+    canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      touch-action: manipulation;
+    }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 2px;
+    }
+
+    .primary-btn {
+      width: 100%;
+      border: none;
+      border-radius: 999px;
+      padding: 12px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #020617;
+      font-size: 1rem;
+      letter-spacing: 0.06em;
+      font-weight: 700;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 14px 35px rgba(59, 130, 246, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .primary-btn:active {
+      transform: scale(0.98) translateY(1px);
+      box-shadow: 0 8px 20px rgba(59, 130, 246, 0.35);
+    }
+
+    .secondary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .chip {
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .made-by {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="brand">KaKaReza</div>
+      <div class="sub-brand">Chishim Yoga</div>
+      <div class="tagline">7 gentle eye‑movement rounds · 15s each</div>
+    </header>
+
+    <main class="card">
+      <div class="status-row">
+        <div class="step-pill">
+          <span class="bullet"></span>
+          <span id="stepLabel">Set 1 / 7</span>
+        </div>
+        <div class="timer" id="timer">15s</div>
+      </div>
+
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+
+      <div class="instruction">
+        <span id="instructionText">Tap “Start Flow” and follow the glowing ball with your eyes only.</span>
+      </div>
+
+      <div class="canvas-wrapper">
+        <canvas id="eyeCanvas"></canvas>
+      </div>
+
+      <section class="controls">
+        <button class="primary-btn" id="startBtn">
+          <span id="startLabel">Start Flow</span>
+        </button>
+        <div class="secondary-row">
+          <div class="chip">Keep your head still · Only move your **eyes**</div>
+          <div>~1 min 45 s</div>
+        </div>
+      </section>
+    </main>
+
+    <div class="made-by">KaKaReza · Eye Wellness Mini‑Game</div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("eyeCanvas");
+    const ctx = canvas.getContext("2d");
+    const timerEl = document.getElementById("timer");
+    const stepLabel = document.getElementById("stepLabel");
+    const instructionText = document.getElementById("instructionText");
+    const progressFill = document.getElementById("progressFill");
+    const startBtn = document.getElementById("startBtn");
+    const startLabel = document.getElementById("startLabel");
+
+    let width, height, centerX, centerY, radius;
+
+    function resizeCanvas() {
+      const rect = canvas.parentElement.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      width = rect.width;
+      height = rect.height;
+      centerX = width / 2;
+      centerY = height / 2;
+      radius = Math.min(width, height) * 0.34;
+    }
+
+    window.addEventListener("resize", () => {
+      resizeCanvas();
+      drawStatic();
+    });
+
+    const movements = [
+      {
+        name: "Horizontal glide",
+        description: "Follow left ↔ right along the line.",
+        fn: (t) => {
+          const p = (t % 1);
+          const x = centerX - radius + 2 * radius * p;
+          const y = centerY;
+          return { x, y };
+        }
+      },
+      {
+        name: "Vertical glide",
+        description: "Follow up ↕ down along the line.",
+        fn: (t) => {
+          const p = (t % 1);
+          const y = centerY - radius + 2 * radius * p;
+          const x = centerX;
+          return { x, y };
+        }
+      },
+      {
+        name: "Circle sweep",
+        description: "Trace the glowing arc clockwise.",
+        fn: (t) => {
+          const angle = -Math.PI / 2 + 2 * Math.PI * (t % 1);
+          return {
+            x: centerX + radius * Math.cos(angle),
+            y: centerY + radius * Math.sin(angle)
+          };
+        }
+      },
+      {
+        name: "Diagonal cross",
+        description: "Eyes glide along an X pattern.",
+        fn: (t) => {
+          const p = (t % 1);
+          const diag = (Math.floor(t) % 2) === 0;
+          const start = diag
+            ? { x: centerX - radius, y: centerY - radius }
+            : { x: centerX + radius, y: centerY - radius };
+          const end = diag
+            ? { x: centerX + radius, y: centerY + radius }
+            : { x: centerX - radius, y: centerY + radius };
+          return {
+            x: start.x + (end.x - start.x) * p,
+            y: start.y + (end.y - start.y) * p
+          };
+        }
+      },
+      {
+        name: "Figure‑8",
+        description: "Follow a relaxed horizontal 8.",
+        fn: (t) => {
+          const p = (t % 1) * 2 * Math.PI;
+          const a = radius * 0.75;
+          const b = radius * 0.4;
+          return {
+            x: centerX + a * Math.sin(p),
+            y: centerY + b * Math.sin(p) * Math.cos(p)
+          };
+        }
+      },
+      {
+        name: "Random jumps",
+        description: "Jump your eyes to each new dot.",
+        fn: (() => {
+          let current = null;
+          let next = null;
+          let lastStep = -1;
+          function randomPoint() {
+            const margin = radius * 0.2;
+            const r = radius * 0.9;
+            const ang = Math.random() * Math.PI * 2;
+            return {
+              x: centerX + r * Math.cos(ang),
+              y: centerY + r * Math.sin(ang)
+            };
+          }
+          return (t) => {
+            const step = Math.floor(t * 3);
+            if (step !== lastStep) {
+              lastStep = step;
+              current = next || randomPoint();
+              next = randomPoint();
+            }
+            const local = (t * 3) % 1;
+            return {
+              x: current.x + (next.x - current.x) * local,
+              y: current.y + (next.y - current.y) * local
+            };
+          };
+        })()
+      },
+      {
+        name: "Slow orbit",
+        description: "Finish with a smooth full circle.",
+        fn: (t) => {
+          const angle = -Math.PI / 2 + 2 * Math.PI * (t % 1);
+          return {
+            x: centerX + radius * Math.cos(angle),
+            y: centerY + radius * Math.sin(angle)
+          };
+        }
+      }
+    ];
+
+    const TOTAL_SETS = movements.length;
+    const SET_DURATION = 15;
+    const TOTAL_DURATION = TOTAL_SETS * SET_DURATION;
+
+    let isRunning = false;
+    let startTimestamp = null;
+    let animationFrame = null;
+
+    function drawStatic() {
+      ctx.clearRect(0, 0, width, height);
+      ctx.save();
+      ctx.strokeStyle = "rgba(148, 163, 184, 0.55)";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(centerX - radius * 1.2, centerY);
+      ctx.lineTo(centerX + radius * 1.2, centerY);
+      ctx.moveTo(centerX, centerY - radius * 1.2);
+      ctx.lineTo(centerX, centerY + radius * 1.2);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawFrame(progressSeconds) {
+      const totalSeconds = Math.min(progressSeconds, TOTAL_DURATION);
+      const setIndex = Math.floor(totalSeconds / SET_DURATION);
+      const setProgress = (totalSeconds % SET_DURATION) / SET_DURATION;
+      const movement = movements[setIndex] || movements[TOTAL_SETS - 1];
+
+      ctx.clearRect(0, 0, width, height);
+      drawStatic();
+
+      const t = setProgress * 3;
+      const { x, y } = movement.fn(t);
+
+      const grad = ctx.createRadialGradient(x, y, 0, x, y, radius * 0.7);
+      grad.addColorStop(0, "rgba(34, 197, 94, 0.3)");
+      grad.addColorStop(1, "rgba(34, 197, 94, 0)");
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(x, y, radius * 0.7, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.shadowColor = "rgba(56, 189, 248, 0.9)";
+      ctx.shadowBlur = 18;
+      ctx.fillStyle = "#f9fafb";
+      ctx.beginPath();
+      ctx.arc(x, y, radius * 0.09, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.shadowBlur = 0;
+
+      const secondsLeftInSet = Math.ceil(SET_DURATION - (totalSeconds % SET_DURATION));
+      timerEl.textContent = `${secondsLeftInSet}s`;
+
+      stepLabel.textContent = `Set ${Math.min(setIndex + 1, TOTAL_SETS)} / ${TOTAL_SETS}`;
+      instructionText.textContent = movement.description;
+
+      const barPercent = (totalSeconds / TOTAL_DURATION) * 100;
+      progressFill.style.width = `${barPercent}%`;
+    }
+
+    function loop(timestamp) {
+      if (!isRunning) return;
+      if (!startTimestamp) startTimestamp = timestamp;
+      const elapsed = (timestamp - startTimestamp) / 1000;
+
+      if (elapsed >= TOTAL_DURATION) {
+        drawFrame(TOTAL_DURATION);
+        isRunning = false;
+        startLabel.textContent = "Restart Flow";
+        timerEl.textContent = "Done";
+        instructionText.textContent = "Close your eyes, breathe, and **relax** for 20 seconds.";
+        return;
+      }
+
+      drawFrame(elapsed);
+      animationFrame = requestAnimationFrame(loop);
+    }
+
+    function startSession() {
+      cancelAnimationFrame(animationFrame);
+      isRunning = true;
+      startTimestamp = null;
+      startLabel.textContent = "Pause";
+      instructionText.textContent = "Follow the glowing ball with your **eyes** only.";
+      animationFrame = requestAnimationFrame(loop);
+    }
+
+    function pauseSession() {
+      isRunning = false;
+      cancelAnimationFrame(animationFrame);
+      startLabel.textContent = "Resume";
+    }
+
+    startBtn.addEventListener("click", () => {
+      if (!isRunning && progressFill.style.width === "0%") {
+        startSession();
+      } else if (isRunning) {
+        pauseSession();
+      } else if (!isRunning && progressFill.style.width !== "100%") {
+        startSession();
+      } else {
+        progressFill.style.width = "0%";
+        timerEl.textContent = "15s";
+        stepLabel.textContent = `Set 1 / ${TOTAL_SETS}`;
+        instructionText.textContent = "Tap “Start Flow” and follow the glowing ball with your eyes only.";
+        drawStatic();
+        startSession();
+      }
+    });
+
+    resizeCanvas();
+    drawStatic();
+  </script>
+</body>
+</html>
 
